@@ -1,0 +1,110 @@
+IT
+Thursday, May 24, 2018 5:18 PM
+That is similar to the U12, but use parameters "id" or "serialNumber"
+instead. By default, the U12 ID (which is local ID / idnum) is 0 and
+is user definable. The firstFound parameter is not available for the
+U12, and is specified by setting "id = -1" which is how the U12 driver
+specifies to use the first found device.
+
+Regards,
+David
+LabJack Support
+support@labjack.com
+
+LabJack Corporation
+3232 S Vance St STE 200
+Lakewood, CO  80227-5030
+V:(303)942-0228   F:(303)951-2916
+[Available] Ollodart, David Bernd
+[Reply] [Reply All] [Forward]
+Actions
+In response to the message from Ollodart, David Bernd, 5/24/2018
+To:
+  [Unknown] support@labjack.com 
+Sent Items
+Thursday, May 24, 2018 4:47 PM
+Nevermind, I found this: https://labjack.com/forums/u6/how-control-multiple-u6-using-python-ubuntu
+[Available] Ollodart, David Bernd
+[Reply All]
+Sent Items
+Thursday, May 24, 2018 3:47 PM
+Yes, I had never run into trouble with omitting file closures in Python and so made this mistake. As a question, can I control 2 LabJack U12 units independently on the same device?
+
+Sent from mobile device
+[Unknown] labjacksupport@gmail.com on behalf of [Unknown] LabJack Support [support@labjack.com]
+[Reply All]
+IT
+Thursday, May 24, 2018 3:42 PM
+Hello David,
+
+The "u12.U12()" call opens the U12. Since the U12 is already opened,
+the "d.open()" call afterwards will fail to find the U12 since it
+cannot claim another handle to the one device, so "Couldn't open a
+U12".
+
+Close applications using the U12. Then try something like this where
+"d.open()" is not used, and see if it opens the U12 and displays the
+analog input reading:
+
+import u12
+
+d = u12.U12()
+print(d.eAnalogIn(0))
+
+Regards,
+David
+LabJack Support
+support@labjack.com
+
+LabJack Corporation
+3232 S Vance St STE 200
+Lakewood, CO  80227-5030
+V:(303)942-0228   F:(303)951-2916
+
+
+On Thu, May 24, 2018 at 11:22 AM, David via LabJack <support@labjack.com> wrote:
+>
+> Submitted on Thursday, May 24, 2018 - 11:22
+>
+> Submitted by user: Anonymous
+>
+> Name: David
+>
+> Email: davidbo2@illinois.edu
+>
+> How did you learn about LabJack? Other
+>
+> Please explain: In Laboratory
+>
+> Subject: LabJack U12 Device Not Found
+>
+> May we use your comment on our site?
+>
+> Message:
+>
+> Hi,
+>
+> I followed the instructions for the LabJackPython installation on Linux,
+> with installation of the exodriver, and could write a script to ramp the
+> output analog voltage which I measured and found to work. But now I find
+> that if I try to open the U12, as in
+>
+> import u12
+> d=u12.U12()
+> d.open()
+>
+> I get
+>
+> Exception: Couldn't open a U12. Check that one is connected and try again.
+>
+> The green LED status light on the U12 is on. I found that if I plugged it in
+> and immediately, in a python shell, ran d.open() the device would be found.
+> Then I restarted my computer, and now the device cannot be found no matter
+> what.
+>
+> I am on Ubuntu 18.04. If I run lsusb I find a LabJack Corporation USB, which
+> outputs
+>
+> Device Status: 0x0000.
+>
+> I have tried multiple USB ports and encountered the same problem.

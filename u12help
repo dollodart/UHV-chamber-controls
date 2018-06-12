@@ -1,0 +1,972 @@
+Help on class U12 in module u12:
+
+class U12(__builtin__.object)
+ |  U12 Class for all U12 specific commands.
+ |  
+ |  u12 = U12()
+ |  
+ |  Methods defined here:
+ |  
+ |  LJHash(self, hashStr, size)
+ |  
+ |  __init__(self, id=-1, serialNumber=None, debug=False)
+ |  
+ |  aiBurst(self, numChannels, channels, scanRate, numScans, idNum=None, demo=0, stateIOin=0, updateIO=0, ledOn=0, gains=[0, 0, 0, 0], disableCal=0, triggerIO=0, triggerState=0, timeout=1, transferMode=0)
+ |      Name: U12.aiBurst(numChannels, channels, scanRate, numScans, idNum=None, demo=0, stateIOin=[0, 0, 0, 0], updateIO=0, ledOn=0, gains=[0, 0, 0, 0], disableCal=0, triggerIO=0, triggerState=0, timeout=1, transferMode=0)
+ |      Args: See section 4.7 of the User's Guide
+ |      Desc: Reads a specified number of scans (up to 4096) at a specified scan rate (up to 8192 Hz) from 1,2, or 4 analog inputs
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.aiBurst(1, [0], 400, 10)
+ |      {'overVoltage': 0, 'scanRate': 400.0, 'stateIOout': <u12.c_long_Array_4096 object at 0x00DB4BC0>, 'idnum': 1, 'voltages': <u12.c_float_Array_4096_Array_4 object at 0x00DB4B70>}
+ |  
+ |  aiSample(self, numChannels, channels, idNum=None, demo=0, stateIOin=0, updateIO=0, ledOn=0, gains=[0, 0, 0, 0], disableCal=0)
+ |      Name: U12.aiSample(channels, idNum=None, demo=0, stateIOin=0, updateIO=0, ledOn=0, gains=[0, 0, 0, 0], disableCal=0)
+ |      Args: See section 4.6 of the User's Guide
+ |      Desc: Reads the voltages from 1,2, or 4 analog inputs. Also controls/reads the 4 IO ports.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.aiSample(2, [0, 1])
+ |      {'stateIO': [0, 0, 0, 0], 'overVoltage': 0, 'idnum': 1, 'voltages': [1.4208984375, 1.4306640625]}
+ |  
+ |  aiStreamClear(self, localID=None)
+ |      Name: U12.aiClear()
+ |      Args: See section 4.10 of the User's Guide
+ |      Desc: This function stops the continuous acquisition. It should be called once when finished with the stream.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.aiStreamStart(1, [0], 200)
+ |      >>> dev.aiStreamRead(10)
+ |      >>> dev.aiStreamClear()
+ |  
+ |  aiStreamRead(self, numScans, localID=None, timeout=1)
+ |      Name: U12.aiStreamRead(numScans, localID=None, timeout=1)
+ |      Args: See section 4.9 of the User's Guide
+ |      Desc: Waits for a specified number of scans to be available and reads them.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.aiStreamStart(1, [0], 200)
+ |      >>> dev.aiStreamRead(10)
+ |      {'overVoltage': 0, 'ljScanBacklog': 0, 'stateIOout': <u12.c_long_Array_4096 object at 0x00DF4AD0>, 'reserved': 0, 'voltages': <u12.c_float_Array_4096_Array_4 object at 0x00DF4B20>}
+ |  
+ |  aiStreamStart(self, numChannels, channels, scanRate, idNum=None, demo=0, stateIOin=0, updateIO=0, ledOn=0, gains=[0, 0, 0, 0], disableCal=0, readCount=0)
+ |      Name: U12.aiStreamStart(numChannels, channels, scanRate, idNum=None, demo=0, stateIOin=0, updateIO=0, ledOn=0, gains=[0, 0, 0, 0], disableCal=0, readCount=0)
+ |      Args: See section 4.8 of the User's Guide
+ |      Desc: Starts a hardware timed continuous acquisition
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.aiStreamStart(1, [0], 200)
+ |      {'scanRate': 200.0, 'idnum': 1}
+ |  
+ |  aoUpdate(self, idNum=None, demo=0, trisD=None, trisIO=None, stateD=None, stateIO=None, updateDigital=0, resetCounter=0, analogOut0=0, analogOut1=0)
+ |      Name: U12.aoUpdate()
+ |      Args: See section 4.11 of the User's Guide
+ |      Desc: Sets the voltages of the analog outputs. Also controls/reads all 20 digital I/O and the counter.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.aoUpdate()
+ |      >>> {'count': 2, 'stateIO': 3, 'idnum': 1, 'stateD': 0}
+ |  
+ |  asynch(self, baudrate, data, idNum=None, demo=0, portB=0, enableTE=0, enableTO=0, enableDel=0, numWrite=0, numRead=0)
+ |      Name: U12.asynchConfig(fullA, fullB, fullC, halfA, halfB, halfC, idNum=None, demo=None, timeoutMult=1, configA=0, configB=0, configTE=0)
+ |      Args: See section 4.13 of the User's Guide
+ |      Desc: Requires firmware V1.1 or higher. This function writes to the asynch registers and sets the direction of the D lines (input/output) as needed.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.asynch(96,1,1,22,2,1)
+ |      >>> dev.asynch(19200, [0, 0])
+ |      >>> {'data': <u12.c_long_Array_18 object at 0x00DEFB70>, 'idnum': <type 'long'>}
+ |  
+ |  asynchConfig(self, fullA, fullB, fullC, halfA, halfB, halfC, idNum=None, demo=None, timeoutMult=1, configA=0, configB=0, configTE=0)
+ |      Name: U12.asynchConfig(fullA, fullB, fullC, halfA, halfB, halfC, idNum=None, demo=None, timeoutMult=1, configA=0, configB=0, configTE=0)
+ |      Args: See section 4.12 of the User's Guide
+ |      Desc: Requires firmware V1.1 or higher. This function writes to the asynch registers and sets the direction of the D lines (input/output) as needed.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.asynchConfig(96,1,1,22,2,1)
+ |      >>> {'idNum': 1}
+ |  
+ |  bitsToVolts(self, chnum, chgain, bits)
+ |      Name: U12.bitsToVolts(chnum, chgain, bits)
+ |      Args: See section 4.14 of the User's Guide
+ |      Desc: Converts a 12-bit (0-4095) binary value into a LabJack voltage. No hardware communication is involved.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.bitsToVolts(0, 0, 2662)
+ |      >>> {'volts': 2.998046875}
+ |  
+ |  close(self)
+ |  
+ |  counter(self, idNum=None, demo=0, resetCounter=0, enableSTB=1)
+ |      Name: U12.counter(idNum=None, demo=0, resetCounter=0, enableSTB=1)
+ |      Args: See section 4.15 of the User's Guide
+ |      Desc: Converts a voltage to it's 12-bit (0-4095) binary representation. No hardware communication is involved.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.counter(0, 0, 3)
+ |      >>> {'bits': 2662}
+ |  
+ |  digitalIO(self, idNum=None, demo=0, trisD=None, trisIO=None, stateD=None, stateIO=None, updateDigital=0)
+ |      Name: U12.digitalIO(idNum=None, demo=0, trisD=None, trisIO=None, stateD=None, stateIO=None, updateDigital=0)
+ |      Args: See section 4.17 of the User's Guide
+ |      Desc: Reads and writes to all 20 digital I/O.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.digitalIO()
+ |      >>> {'stateIO': 0, 'stateD': 0, 'idnum': 1, 'outputD': 0, 'trisD': 0}
+ |  
+ |  eAnalogIn(self, channel, idNum=None, demo=0, gain=0)
+ |      Name: U12.eAnalogIn(channel, idNum = None, demo=0, gain=0)
+ |      Args: See section 4.1 of the User's Guide
+ |      Desc: This is a simplified version of AISample. Reads the voltage from 1 analog input
+ |      
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.eAnalogIn(0)
+ |      {'overVoltage': 0, 'idnum': 1, 'voltage': 1.435546875}
+ |  
+ |  eAnalogOut(self, analogOut0, analogOut1, idNum=None, demo=0)
+ |      Name: U12.eAnalogOut(analogOut0, analogOut1, idNum = None, demo=0)
+ |      Args: See section 4.2 of the User's Guide
+ |      Desc: This is a simplified version of AOUpdate. Sets the voltage of both analog outputs.
+ |      
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.eAnalogOut(2, 2)
+ |      {'idnum': 1}
+ |  
+ |  eCount(self, idNum=None, demo=0, resetCounter=0)
+ |      Name: U12.eCount(idNum = None, demo = 0, resetCounter = 0)
+ |      Args: See section 4.3 of the User's Guide
+ |      Desc: This is a simplified version of Counter. Reads & resets the counter (CNT).
+ |      
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.eCount()
+ |      {'count': 1383596032.0, 'ms': 251487257.0}
+ |  
+ |  eDigitalIn(self, channel, idNum=None, demo=0, readD=0)
+ |      Name: U12.eDigitalIn(channel, idNum = None, demo = 0, readD=0)
+ |      Args: See section 4.4 of the User's Guide
+ |      Desc: This is a simplified version of DigitalIO that reads the state of
+ |            one digital input. Also configures the requested pin to input and
+ |            leaves it that way.
+ |      
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.eDigitalIn(0)
+ |      {'state': 0, 'idnum': 1}
+ |  
+ |  eDigitalOut(self, channel, state, idNum=None, demo=0, writeD=0)
+ |      Name: U12.eDigitalOut(channel, state, idNum = None, demo = 0, writeD=0)
+ |      Args: See section 4.5 of the User's Guide
+ |      Desc: This is a simplified version of DigitalIO that sets/clears the
+ |            state of one digital output. Also configures the requested pin to
+ |            output and leaves it that way.
+ |      
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.eDigitalOut(0, 1)
+ |      {idnum': 1}
+ |  
+ |  getDriverVersion(self)
+ |      Name: U12.getDriverVersion()
+ |      Args: See section 4.18 of the User's Guide
+ |      Desc: Returns the version number of ljackuw.dll. No hardware communication is involved.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.getDriverVersion()
+ |      >>> 1.21000003815
+ |  
+ |  getFirmwareVersion(self, idNum=None)
+ |      Name: U12.getErrorString(idnum=None)
+ |      Args: See section 4.20 of the User's Guide
+ |      Desc: Retrieves the firmware version from the LabJack's processor
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.getFirmwareVersion()
+ |      >>> Unkown error
+ |  
+ |  getWinVersion(self)
+ |      Name: U12.getErrorString()
+ |      Args: See section 4.21 of the User's Guide
+ |      Desc: Uses a Windows API function to get the OS version
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.getWinVersion()
+ |      >>> {'majorVersion': 5L, 'minorVersion': 1L, 'platformID': 2L, 'buildNumber': 2600L, 'servicePackMajor': 2L, 'servicePackMinor': 0L}
+ |  
+ |  listAll(self)
+ |      Name: U12.listAll()
+ |      Args: See section 4.22 of the User's Guide
+ |      Desc: Searches the USB for all LabJacks, and returns the serial number and local ID for each
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.listAll()
+ |      >>> {'serialnumList': <u12.c_long_Array_127 object at 0x00E2AD50>, 'numberFound': 1, 'localIDList': <u12.c_long_Array_127 object at 0x00E2ADA0>}
+ |  
+ |  localID(self, localID, idNum=None)
+ |      Name: U12.localID(localID, idNum=None)
+ |      Args: See section 4.23 of the User's Guide
+ |      Desc: Changes the local ID of a specified LabJack
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.localID(1)
+ |      >>> {'idnum':1}
+ |  
+ |  noThread(self, noThread, idNum=None)
+ |      Name: U12.localID(noThread, idNum=None)
+ |      Args: See section 4.24 of the User's Guide
+ |      Desc: This function is needed when interfacing TestPoint to the LabJack DLL on Windows 98/ME
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.noThread(1)
+ |      >>> {'idnum':1}
+ |  
+ |  open(self, id=-1, serialNumber=None)
+ |      Opens the U12.
+ |      
+ |      The Windows UW driver opens the device every time a function is called.
+ |      The Exodriver, however, works like the UD family of devices and returns
+ |      a handle. On Windows, this method does nothing. On Mac OS X and Linux,
+ |      this method acquires a device handle and saves it to the U12 object.
+ |  
+ |  pulseOut(self, bitSelect, numPulses, timeB1, timeC1, timeB2, timeC2, idNum=None, demo=0, lowFirst=0)
+ |      Name: U12.pulseOut(bitSelect, numPulses, timeB1, timeC1, timeB2, timeC2, idNum=None, demo=0, lowFirst=0)
+ |      Args: See section 4.25 of the User's Guide
+ |      Desc: This command creates pulses on any/all of D0-D7
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.pulseOut(0, 1, 1, 1, 1, 1)
+ |      >>> {'idnum':1}
+ |  
+ |  pulseOutCalc(self, frequency)
+ |      Name: U12.pulseOutFinish(frequency)
+ |      Args: See section 4.28 of the User's Guide
+ |      Desc: This function can be used to calculate the cycle times for PulseOut or PulseOutStart.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.pulseOutCalc(100)
+ |      >>> {'frequency': 100.07672882080078, 'timeB': 247, 'timeC': 1}
+ |  
+ |  pulseOutFinish(self, timeoutMS, idNum=None, demo=0)
+ |      Name: U12.pulseOutFinish(timeoutMS, idNum=None, demo=0)
+ |      Args: See section 4.27 of the User's Guide
+ |      Desc: See PulseOutStart for more information
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.pulseOutStart(0, 1, 1, 1, 1, 1)
+ |      >>> dev.pulseOutFinish(100)
+ |      >>> {'idnum':1}
+ |  
+ |  pulseOutStart(self, bitSelect, numPulses, timeB1, timeC1, timeB2, timeC2, idNum=None, demo=0, lowFirst=0)
+ |      Name: U12.pulseOutStart(bitSelect, numPulses, timeB1, timeC1, timeB2, timeC2, idNum=None, demo=0, lowFirst=0)
+ |      Args: See section 4.26 of the User's Guide
+ |      Desc: PulseOutStart and PulseOutFinish are used as an alternative to PulseOut (See PulseOut for more information)
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.pulseOutStart(0, 1, 1, 1, 1, 1)
+ |      >>> {'idnum':1}
+ |  
+ |  rawAIBurst(self, channel0PGAMUX=8, channel1PGAMUX=9, channel2PGAMUX=10, channel3PGAMUX=11, NumberOfScans=8, TriggerIONum=0, TriggerState=0, UpdateIO=False, LEDState=True, IO3ToIO0States=0, FeatureReports=False, TriggerOn=False, SampleInterval=15000)
+ |      Name: U12.rawAIBurst( channel0PGAMUX = 8, channel1PGAMUX = 9,
+ |                            channel2PGAMUX = 10, channel3PGAMUX = 11,
+ |                            NumberOfScans = 8, TriggerIONum = 0,
+ |                            TriggerState = 0, UpdateIO = False,
+ |                            LEDState = True, IO3ToIO0States = 0,
+ |                            FeatureReports = False, TriggerOn = False,
+ |                            SampleInterval = 15000 )
+ |      
+ |      Args: channel0PGAMUX, A byte that contains channel0 information
+ |            channel1PGAMUX, A byte that contains channel1 information
+ |            channel2PGAMUX, A byte that contains channel2 information
+ |            channel3PGAMUX, A byte that contains channel3 information
+ |            NumberOfScans, The number of scans you wish to take. Rounded up
+ |                           to a power of 2.
+ |            TriggerIONum, IO to trigger burst on.
+ |            TriggerState, State to trigger on.
+ |            UpdateIO, True if you want to update the IO/D line. False to 
+ |                      False to just read their values.
+ |            LEDState, Turns the status LED on or off.
+ |            IO3ToIO0States, 4 bits for IO3-0 states
+ |            FeatureReports, Use feature reports, or not.
+ |            TriggerOn, Use trigger to start acquisition.
+ |            SampleInterval, = int(6000000.0/(ScanRate * NumberOfChannels))
+ |                            must be greater than (or equal to) 733.
+ |      
+ |      Desc: After receiving a AIBurst command, the LabJack collects 4
+ |            channels at the specified data rate, and puts data in the buffer.
+ |            This continues until the buffer is full, at which time the
+ |            LabJack starts sending the data to the host. Data is sent to the
+ |            host 1 scan at a time while checking for a command from the host.
+ |            If a command is received the burst operation is canceled and the
+ |            command is executed normally. If the LED is enabled, it blinks at
+ |            4 Hz while waiting for a trigger, is off during acquisition,
+ |            blinks at about 8 Hz during data delivery, and is set on when
+ |            done or stopped. See Section 5.5 of the User's Guide.
+ |            
+ |            This function sends the AIBurst command, then reads all the
+ |            responses. Separating the write and read is not currently
+ |            supported (like in the UW driver).
+ |            
+ |            By default, it does single-ended readings on AI0-4 at 100Hz for 8
+ |            scans.
+ |            
+ |      Returns: A dictionary with the following keys:
+ |          Channel0-3, A list of the readings on the channels
+ |          PGAOvervoltages, A list of the over-voltage flags
+ |          IO3toIO0State, A list of the IO states
+ |          IterationCounters, A list of the values of the iteration counter
+ |          Backlogs, value*256 = number of packets in the backlog.
+ |          BufferOverflowOrChecksumErrors, If True and Backlog = 31,
+ |                                          then a buffer overflow occurred. If
+ |                                          True and Backlog = 0, then Checksum
+ |                                          error occurred.
+ |      
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.rawAIBurst()
+ |      {
+ |        'Channel0': [1.484375, 1.513671875, ... , 1.46484375],
+ |        
+ |        'Channel1': [1.455078125, 1.455078125, ... , 1.455078125],
+ |        
+ |        'Channel2': [1.46484375, 1.474609375, ... , 1.46484375],
+ |        
+ |        'Channel3': [1.435546875, 1.42578125, ... , 1.435546875],
+ |        
+ |        'PGAOvervoltages': [False, False, ..., False],
+ |        
+ |        'IO3toIO0States': 
+ |          [<BitField object: [ IO3 = Low (0), IO2 = Low (0), IO1 = Low (0),
+ |                               IO0 = Low (0) ] >, ... ],
+ |        
+ |        'IterationCounters': [0, 1, 2, 3, 4, 5, 6, 0],
+ |        
+ |        'Backlogs': [0, 0, 0, 0, 0, 0, 0, 0],
+ |        
+ |        'BufferOverflowOrChecksumErrors': [False, False, ... , False]
+ |      }
+ |  
+ |  rawAIContinuous(self, channel0PGAMUX=8, channel1PGAMUX=9, channel2PGAMUX=10, channel3PGAMUX=11, FeatureReports=False, CounterRead=False, UpdateIO=False, LEDState=True, IO3ToIO0States=0, SampleInterval=15000)
+ |      Currently in development.
+ |      
+ |      The function is mostly implemented, but is currently too slow to be 
+ |      useful.
+ |  
+ |  rawAISample(self, channel0PGAMUX=8, channel1PGAMUX=9, channel2PGAMUX=10, channel3PGAMUX=11, UpdateIO=False, LEDState=True, IO3toIO0States=0, EchoValue=0)
+ |      Name: U12.rawAISample(channel0PGAMUX = 8, channel1PGAMUX = 9,
+ |                            channel2PGAMUX = 10, channel3PGAMUX = 11,
+ |                            UpdateIO = False, LEDState = True,
+ |                            IO3toIO0States = 0, EchoValue = 0)
+ |      
+ |      Args: channel0PGAMUX, A byte that contains channel0 information
+ |            channel1PGAMUX, A byte that contains channel1 information
+ |            channel2PGAMUX, A byte that contains channel2 information
+ |            channel3PGAMUX, A byte that contains channel3 information
+ |            IO3toIO0States, A byte that represents the states of IO0 to IO3
+ |            UpdateIO, If true, set IO0 to IO 3 to match IO3toIO0States
+ |            LEDState, Turns the status LED on or off.
+ |            EchoValue, Sometimes, you want what you put in.
+ |      
+ |      Desc: Collects readings from 4 analog inputs. It can also toggle the
+ |            status LED and update the state of the IOs. See Section 5.1 of
+ |            the User's Guide.
+ |            
+ |            By default it will read AI0-3 (single-ended).
+ |            
+ |      Returns: A dictionary with the following keys:
+ |          PGAOvervoltage, A bool representing if the U12 detected overvoltage
+ |          IO3toIO0States, a BitField representing the state of IO0 to IO3
+ |          Channel0-3, the analog voltage for the channel
+ |          EchoValue, a repeat of the value passed in.
+ |          
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.rawAISample()
+ |      {
+ |        'IO3toIO0States':
+ |          <BitField object: [ IO3 = Low (0), IO2 = Low (0),
+ |                              IO1 = Low (0), IO0 = Low (0) ] >,
+ |        'Channel0': 1.46484375,
+ |        'Channel1': 1.4501953125,
+ |        'Channel2': 1.4599609375,
+ |        'Channel3': 1.4306640625,
+ |        'PGAOvervoltage': False,
+ |        'EchoValue': 0
+ |      }
+ |  
+ |  rawAsynch(self, Data, AddDelay=False, TimeoutActive=False, SetTransmitEnable=False, PortB=False, NumberOfBytesToWrite=0, NumberOfBytesToRead=0)
+ |      Name: U12.rawAsynch(Data, AddDelay = False, TimeoutActive = False,
+ |                          SetTransmitEnable = False, PortB = False,
+ |                          NumberOfBytesToWrite = 0, NumberOfBytesToRead = 0)
+ |                          
+ |      Args: Data, A list of bytes to write.
+ |            AddDelay, True to add a 1 bit delay between each transmit byte.
+ |            TimeoutActive, True to enable timeout for the receive phase.
+ |            SetTransmitEnable, True to set Transmit Enable to high during
+ |                               transmit and low during receive.
+ |            PortB, True to use PortB instead of PortA.
+ |            NumberOfBytesToWrite, Number of bytes to write.
+ |            NumberOfBytesToRead, Number of bytes to read.
+ |      
+ |      Desc: Requires firmware V1.1 or higher. This function writes and then
+ |            reads half-duplex asynchronous data on 1 of two pairs of D lines.
+ |            See section 5.13 of the User's Guide.
+ |            
+ |      Returns: A dictionary with the following keys,
+ |          DataByte0-3, the first four data bytes read over the RX line
+ |          ErrorFlags, a BitField representing the error flags.
+ |      
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> # Set the full and half A,B,C to 9600
+ |      >>> d.rawWriteRAM([0, 1, 1, 200], 0x073)
+ |      >>> d.rawWriteRAM([5, 1, 2, 48], 0x076)
+ |      >>> print d.rawAsynch([1, 2, 3, 4], NumberOfBytesToWrite = 4, NumberOfBytesToRead = 4)
+ |      {
+ |       'DataByte3': 4,
+ |       'DataByte2': 3,
+ |       'DataByte1': 2,
+ |       'DataByte0': 1,
+ |       'ErrorFlags': <BitField object: [ Timeout Error Flag = 0 (0), ... ] >
+ |      }
+ |  
+ |  rawCounter(self, StrobeEnabled=False, ResetCounter=False)
+ |      Name: U12.rawCounter(StrobeEnabled = False, ResetCounter = False)
+ |      Args: StrobeEnable, set to True to enable strobe.
+ |            ResetCounter, set to True to reset the counter AFTER reading.
+ |      Desc: This command controls and reads the 32-bit counter. See
+ |            Section 5.3 of the User's Guide.
+ |      
+ |      Returns: A dictionary with the following keys:
+ |          D15toD8States, a BitField representing the states of D15-D8.
+ |          D7toD0States, a BitField representing the states of D7-D0.
+ |          IO3toIO0States, a BitField representing the states of IO3-IO0.
+ |          Counter, the value of the counter
+ |      
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.rawCounter()
+ |      {
+ |        'D15toD8States':
+ |          <BitField object: [ D15 = Low (0), D14 = Low (0), D13 = Low (0),
+ |                              D12 = Low (0), D11 = Low (0), D10 = Low (0),
+ |                              D9 = Low (0), D8 = Low (0) ] >,
+ |      
+ |        'D7toD0States':
+ |          <BitField object: [ D7 = Low (0), D6 = Low (0), D5 = Low (0),
+ |                              D4 = Low (0), D3 = Low (0), D2 = Low (0),
+ |                              D1 = Low (0), D0 = Low (0) ] >,
+ |      
+ |        'IO3toIO0States':
+ |          <BitField object: [ IO3 = Low (0), IO2 = Low (0), IO1 = Low (0),
+ |                              IO0 = Low (0) ] >,
+ |        
+ |        'Counter': 0
+ |      }
+ |  
+ |  rawCounterPWMDIO(self, D15toD8Directions=0, D7toD0Directions=0, D15toD8States=0, D7toD0States=0, IO3toIO0DirectionsAndStates=0, ResetCounter=False, UpdateDigital=0, PWMA=0, PWMB=0)
+ |      Name: U12.rawCounterPWMDIO( D15toD8Directions = 0, D7toD0Directions = 0,
+ |                                  D15toD8States = 0, D7toD0States = 0,
+ |                                  IO3toIO0DirectionsAndStates = 0,
+ |                                  ResetCounter = False, UpdateDigital = 0,
+ |                                  PWMA = 0, PWMB = 0)
+ |      
+ |      Args: D15toD8Directions, A byte where 0 = Output, 1 = Input for D15-8
+ |            D7toD0Directions, A byte where 0 = Output, 1 = Input for D7-0
+ |            D15toD8States, A byte where 0 = Low, 1 = High for D15-8
+ |            D7toD0States, A byte where 0 = Low, 1 = High for D7-0
+ |            IO3toIO0DirectionsAndStates, Bits 7-4: Direction, 3-0: State
+ |            ResetCounter, If True, reset the counter after reading.
+ |            UpdateDigital, True if you want to update the IO/D line. False to 
+ |                           False to just read their values.
+ |            PWMA, Voltage to set AO0 to output.
+ |            PWMB, Voltage to set AO1 to output.
+ |      
+ |      Desc: This command controls all 20 digital I/O, and the 2 PWM outputs.
+ |            The response provides the state of all I/O and the current count.
+ |            See Section 5.4 of the User's Guide.
+ |            
+ |            By default, sets the AOs to 0 and reads the states and counters.
+ |            
+ |      Returns: A dictionary with the following keys:
+ |          D15toD8States, a BitField representing the states of D15-D8.
+ |          D7toD0States, a BitField representing the states of D7-D0.
+ |          IO3toIO0States, a BitField representing the states of IO3-IO0.
+ |          Counter, the value of the counter
+ |      
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.rawCounterPWMDIO()
+ |      {
+ |        'D15toD8States':
+ |          <BitField object: [ D15 = Low (0), D14 = Low (0), D13 = Low (0),
+ |                              D12 = Low (0), D11 = Low (0), D10 = Low (0),
+ |                              D9 = Low (0), D8 = Low (0) ] >,
+ |        
+ |        'D7toD0States':
+ |          <BitField object: [ D7 = Low (0), D6 = Low (0), D5 = Low (0),
+ |                              D4 = Low (0), D3 = Low (0), D2 = Low (0),
+ |                              D1 = Low (0), D0 = Low (0) ] >,
+ |      
+ |        'IO3toIO0States':
+ |          <BitField object: [ IO3 = Low (0), IO2 = Low (0),
+ |                              IO1 = Low (0), IO0 = Low (0) ] >,
+ |        
+ |        'Counter': 0
+ |      }
+ |  
+ |  rawDIO(self, D15toD8Directions=0, D7toD0Directions=0, D15toD8States=0, D7toD0States=0, IO3toIO0DirectionsAndStates=0, UpdateDigital=False)
+ |      Name: U12.rawDIO(D15toD8Directions = 0, D7toD0Directions = 0,
+ |                       D15toD8States = 0, D7toD0States = 0,
+ |                       IO3toIO0DirectionsAndStates = 0, UpdateDigital = 1)
+ |      
+ |      Args: D15toD8Directions, A byte where 0 = Output, 1 = Input for D15-8
+ |            D7toD0Directions, A byte where 0 = Output, 1 = Input for D7-0
+ |            D15toD8States, A byte where 0 = Low, 1 = High for D15-8
+ |            D7toD0States, A byte where 0 = Low, 1 = High for D7-0
+ |            IO3toIO0DirectionsAndStates, Bits 7-4: Direction, 3-0: State
+ |            UpdateDigital, True if you want to update the IO/D line. False to 
+ |                           False to just read their values.
+ |      
+ |      Desc: This commands reads the direction and state of all the digital
+ |            I/O. See Section 5.2 of the U12 User's Guide.
+ |      
+ |            By default, it just reads the directions and states.
+ |      
+ |      Returns: A dictionary with the following keys:
+ |          D15toD8Directions, a BitField representing the directions of D15-D8
+ |          D7toD0Directions, a BitField representing the directions of D7-D0.
+ |          D15toD8States, a BitField representing the states of D15-D8.
+ |          D7toD0States, a BitField representing the states of D7-D0.
+ |          IO3toIO0States, a BitField representing the states of IO3-IO0.
+ |          D15toD8OutputLatchStates, BitField of output latch states for D15-8
+ |          D7toD0OutputLatchStates, BitField of output latch states for D7-0
+ |      
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.rawDIO()
+ |      {
+ |        
+ |        'D15toD8Directions':
+ |          <BitField object: [ D15 = Input (1), D14 = Input (1),
+ |                              D13 = Input (1), D12 = Input (1),
+ |                              D11 = Input (1), D10 = Input (1),
+ |                              D9 = Input (1), D8 = Input (1) ] >,
+ |                              
+ |        'D7toD0Directions':
+ |          <BitField object: [ D7 = Input (1), D6 = Input (1), D5 = Input (1),
+ |                              D4 = Input (1), D3 = Input (1), D2 = Input (1),
+ |                              D1 = Input (1), D0 = Input (1) ] >,
+ |                              
+ |        'D15toD8States':
+ |          <BitField object: [ D15 = Low (0), D14 = Low (0), D13 = Low (0),
+ |                              D12 = Low (0), D11 = Low (0), D10 = Low (0),
+ |                              D9 = Low (0), D8 = Low (0) ] >,
+ |      
+ |        'D7toD0States':
+ |          <BitField object: [ D7 = Low (0), D6 = Low (0), D5 = Low (0),
+ |                              D4 = Low (0), D3 = Low (0), D2 = Low (0),
+ |                              D1 = Low (0), D0 = Low (0) ] >,
+ |      
+ |        'IO3toIO0States':
+ |          <BitField object: [ IO3 = Low (0), IO2 = Low (0), IO1 = Low (0),
+ |                              IO0 = Low (0) ] >,
+ |      
+ |        'D15toD8OutputLatchStates':
+ |          <BitField object: [ D15 = 0 (0), D14 = 0 (0), D13 = 0 (0),
+ |                              D12 = 0 (0), D11 = 0 (0), D10 = 0 (0),
+ |                              D9 = 0 (0), D8 = 0 (0) ] >,
+ |        
+ |        'D7toD0OutputLatchStates':
+ |          <BitField object: [ D7 = 0 (0), D6 = 0 (0), D5 = 0 (0), D4 = 0 (0),
+ |                              D3 = 0 (0), D2 = 0 (0), D1 = 0 (0),
+ |                              D0 = 0 (0) ] >
+ |      }
+ |  
+ |  rawPulseout(self, B1=10, C1=2, B2=10, C2=2, D7ToD0PulseSelection=1, ClearFirst=False, NumberOfPulses=5)
+ |      Name: U12.rawPulseout( B1 = 10, C1 = 2, B2 = 10, C2 = 2,
+ |                             D7ToD0PulseSelection = 1, ClearFirst = False,
+ |                             NumberOfPulses = 5)
+ |      
+ |      Args: B1, the B component of the first half cycle
+ |            C1, the C component of the first half cycle
+ |            B2, the B component of the second half cycle
+ |            C2, the C component of the second half cycle
+ |            D7ToD0PulseSelection, which D lines to pulse.
+ |            ClearFirst, True = Start Low.
+ |            NumberOfPulses, the number of pulses
+ |      
+ |      Desc: This command creates pulses on any, or all, of D0-D7. The desired
+ |            D lines must be set to output with some other function. See
+ |            Section 5.7 of the User's Guide.
+ |            
+ |            By default, pulses D0 5 times at 400us high, then 400 us low.
+ |      
+ |      Returns: None
+ |      
+ |      Example:
+ |      Have a jumper wire connected from D0 to CNT.
+ |      
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.rawDIO(D7toD0Directions = 0, UpdateDigital = True)
+ |      >>> d.rawCounter(ResetCounter = True)
+ |      >>> d.rawPulseout(ClearFirst = True)
+ |      >>> print d.rawCounter()
+ |      { 'IO3toIO0States': ... , 
+ |        'Counter': 5, 
+ |        'D7toD0States': ... ,
+ |        'D15toD8States': ...
+ |      }
+ |  
+ |  rawReadLocalId(self)
+ |      Name: U12.rawReadLocalId()
+ |      
+ |      Args: None
+ |      
+ |      Desc: Reads the Local ID from internal memory.
+ |      
+ |      Returns: The U12's Local ID as an integer.
+ |      
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> print d.rawReadLocalId()
+ |      0
+ |  
+ |  rawReadRAM(self, Address=0)
+ |      Name: U12.rawReadRAM(Address = 0)
+ |      
+ |      Args: Address, the starting address to read from
+ |      
+ |      Desc: Reads 4 bytes out of the U12's internal memory. See section 5.11
+ |            of the User's Guide.
+ |            
+ |            By default, reads the bytes that make up the serial number.
+ |            
+ |      Returns: A dictionary with the following keys:
+ |          DataByte0, the data byte at Address - 0
+ |          DataByte1, the data byte at Address - 1
+ |          DataByte2, the data byte at Address - 2
+ |          DataByte3, the data byte at Address - 3
+ |          
+ |      Example:
+ |      >>> import u12, struct
+ |      >>> d = u12.U12()
+ |      >>> r = d.rawReadRAM()
+ |      >>> print r
+ |      {'DataByte3': 5, 'DataByte2': 246, 'DataByte1': 139, 'DataByte0': 170}
+ |      >>> bytes = [ r['DataByte3'], r['DataByte2'], r['DataByte1'], r['DataByte0'] ]
+ |      >>> print struct.unpack(">I", struct.pack("BBBB", *bytes))[0]
+ |      100043690
+ |  
+ |  rawReadSerial(self)
+ |      Name: U12.rawReadSerial()
+ |      
+ |      Args: None
+ |      
+ |      Desc: Reads the serial number from internal memory.
+ |      
+ |      Returns: The U12's serial number as an integer.
+ |      
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> print d.rawReadSerial()
+ |      10004XXXX
+ |  
+ |  rawReenumerate(self)
+ |      Name: U12.rawReenumerate()
+ |      
+ |      Desc: Detaches from the USB, reloads config parameters, and then
+ |            reattaches so the device can be re-enumerated. See Section 5.9 of
+ |            the User's Guide.
+ |            
+ |            Note: The function will close the device after it has written the 
+ |                  command.
+ |      
+ |      Returns: None
+ |      
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.rawReenumerate()
+ |  
+ |  rawReset(self)
+ |      Name: U12.rawReset()
+ |      
+ |      Desc: Sits in an infinite loop until micro watchdog timeout after about
+ |            2 seconds. See Section 5.8 of the User's Guide.
+ |            
+ |            Note: The function will close the device after it has written the 
+ |                  command.
+ |      
+ |      Returns: None
+ |      
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.rawReset()
+ |  
+ |  rawSHT1X(self, Data=[3, 0, 0, 0], WaitForMeasurementReady=True, IssueSerialReset=False, Add1MsDelay=False, Add300UsDelay=False, IO3State=1, IO2State=1, IO3Direction=1, IO2Direction=1, NumberOfBytesToWrite=1, NumberOfBytesToRead=3)
+ |      Name: U12.rawSHT1X( Data = [3, 0, 0, 0],
+ |                          WaitForMeasurementReady = True,
+ |                          IssueSerialReset = False, Add1MsDelay = False,
+ |                          Add300UsDelay = False, IO3State = 1, IO2State = 1,
+ |                          IO3Direction = 1, IO2Direction = 1,
+ |                          NumberOfBytesToWrite = 1, NumberOfBytesToRead = 3)
+ |      
+ |      Args: Data, a list of bytes to write to the SHT.
+ |            WaitForMeasurementReady, Wait for the measurement ready signal.
+ |            IssueSerialReset, perform a serial reset
+ |            Add1MsDelay, adds 1ms delay
+ |            Add300UsDelay, adds a 300us delay
+ |            IO3State, sets the state of IO3
+ |            IO2State, sets the state of IO2
+ |            IO3Direction, sets the direction of IO3 ( 1 = Output )
+ |            IO2Direction, sets the direction of IO3 ( 1 = Output )
+ |            NumberOfBytesToWrite, how many bytes to write
+ |            NumberOfBytesToRead, how may bytes to read back
+ |            
+ |      Desc: Sends and receives data from a SHT1X T/RH sensor from Sensirion.
+ |            See Section 5.15 of the User's Guide.
+ |            
+ |            By default, reads the temperature from the SHT.
+ |            
+ |      Returns: A dictionary with the following keys,
+ |          DataByte0-3, the four data bytes read
+ |          ErrorFlags, a BitField representing the error flags.
+ |      
+ |      Example:
+ |      Uses an EI-1050 Temp/Humidity probe wired as follows:
+ |      Data ( Green ) -> IO0
+ |      Clock ( White ) -> IO1
+ |      Ground ( Black ) -> GND
+ |      Power ( Red ) -> +5V
+ |      Enable ( Brown ) -> IO2
+ |      
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> results = d.rawSHT1X()
+ |      >>> print results
+ |      {
+ |       'DataByte3': 0,
+ |       'DataByte2': 69,
+ |       'DataByte1': 48,
+ |       'DataByte0': 25,
+ |       'ErrorFlags':
+ |        <BitField object: [ Serial Reset Error Flag = 0 (0), ... ] >
+ |      }
+ |      >>> tempC = (results['DataByte0'] * 256 ) + results['DataByte1']
+ |      >>> tempC = (tempC * 0.01) - 40
+ |      >>> print tempC
+ |      24.48
+ |      >>> results = d.rawSHT1X(Data = [5,0,0,0])
+ |      >>> print results
+ |      {
+ |       'DataByte3': 0,
+ |       'DataByte2': 200,
+ |       'DataByte1': 90,
+ |       'DataByte0': 2,
+ |       'ErrorFlags':
+ |        <BitField object: [ Serial Reset Error Flag = 0 (0), ... ] >
+ |      }
+ |      >>> sorh = (results['DataByte0'] * 256 ) + results['DataByte1']
+ |      >>> rhlinear = (-0.0000028*sorh*sorh)+(0.0405*sorh)-4.0
+ |      >>> rh = ((tempC-25.0)*(0.01+(0.00008*sorh)))+rhlinear
+ |      >>> print rh
+ |      19.3360256
+ |  
+ |  rawSPI(self, Data, AddMsDelay=False, AddHundredUsDelay=False, SPIMode='A', NumberOfBytesToWriteRead=0, ControlCS=False, StateOfActiveCS=False, CSLineNumber=0)
+ |      Name: U12.rawSPI( Data, AddMsDelay = False, AddHundredUsDelay = False,
+ |                        SPIMode = 'A', NumberOfBytesToWriteRead = 0,
+ |                        ControlCS = False, StateOfActiveCS = False,
+ |                        CSLineNumber = 0)
+ |      
+ |      Args: Data, A list of four bytes to write using SPI
+ |            AddMsDelay, If True, a 1 ms delay is added between each bit
+ |            AddHundredUsDelay, if True, 100us delay is added
+ |            SPIMode, 'A', 'B', 'C', or 'D'
+ |            NumberOfBytesToWriteRead, number of bytes to write and read.
+ |            ControlCS, D0-D7 is automatically controlled as CS. The state and
+ |                       direction of CS is only tested if control is enabled.
+ |            StateOfActiveCS, Active state for CS line.
+ |            CSLineNumber, D line to use as CS if enabled (0-7).
+ |      
+ |      Desc: This function performs SPI communication. See Section 5.14 of the
+ |            User's Guide.
+ |            
+ |      Returns: A dictionary with the following keys,
+ |          DataByte0-3, the first four data bytes read
+ |          ErrorFlags, a BitField representing the error flags.
+ |          
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> d.rawSPI([1,2,3,4], NumberOfBytesToWriteRead = 4)
+ |      {
+ |       'DataByte3': 4,
+ |       'DataByte2': 3,
+ |       'DataByte1': 2,
+ |       'DataByte0': 1,
+ |       'ErrorFlags':
+ |        <BitField object: [ CSStateTris Error Flag = 0 (0), ... ] >
+ |      }
+ |  
+ |  rawWatchdog(self, IgnoreCommands=False, D0Active=False, D0State=False, D1Active=False, D1State=False, D8Active=False, D8State=False, ResetOnTimeout=False, WatchdogActive=False, Timeout=60)
+ |      Name: U12.rawWatchdog( IgnoreCommands = False, D0Active = False,
+ |                             D0State = False, D1Active = False,
+ |                             D1State = False, D8Active = False,
+ |                             D8State = False, ResetOnTimeout = False,
+ |                             WatchdogActive = False, Timeout = 60)
+ |      
+ |      Desc: Sets the settings for the watchdog, or just reads the firmware
+ |            version of the U12. See section 5.10 of the User's Guide.
+ |            
+ |            By defaults, just reads the firmware version.
+ |            
+ |      Returns: A dictionary with the following keys:
+ |          FirmwareVersion, the firmware version of the U12.
+ |      
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> print d.rawWatchdog()
+ |      {'FirmwareVersion': '1.10'}
+ |  
+ |  rawWriteRAM(self, Data, Address)
+ |      Name: U12.rawWriteRAM(Data, Address)
+ |      
+ |      Args: Data, a list of 4 bytes to write to memory.
+ |            Address, the starting address to write to.
+ |      
+ |      Desc: Writes 4 bytes to the U12's internal memory. See section 5.13 of
+ |            the User's Guide.
+ |            
+ |            No default behavior, you must pass Data and Address.
+ |            
+ |      Returns: A dictionary with the following keys:
+ |          DataByte0, the data byte at Address - 0
+ |          DataByte1, the data byte at Address - 1
+ |          DataByte2, the data byte at Address - 2
+ |          DataByte3, the data byte at Address - 3
+ |      
+ |      Example:
+ |      >>> import u12
+ |      >>> d = u12.U12()
+ |      >>> print d.rawWriteRAM([1, 2, 3, 4], 0x200)
+ |      {'DataByte3': 4, 'DataByte2': 3, 'DataByte1': 2, 'DataByte0': 1}
+ |  
+ |  reEnum(self, idNum=None)
+ |      Name: U12.reEnum(idNum=None)
+ |      Args: See section 4.29 of the User's Guide
+ |      Desc: Causes the LabJack to electrically detach from and re-attach to the USB so it will re-enumerate
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.reEnum()
+ |      >>> {'idnum': 1}
+ |  
+ |  read(self, numBytes=8)
+ |  
+ |  readMem(self, address, idnum=None)
+ |      Name: U12.readMem(address, idnum=None)
+ |      Args: See section 4.36 of the User's Guide
+ |      Desc: Reads 4 bytes from a specified address in the LabJack's nonvolatile memory
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.readMem(0)
+ |      >>> [5, 246, 16, 59]
+ |  
+ |  reset(self, idNum=None)
+ |      Name: U12.reset(idNum=None)
+ |      Args: See section 4.30 of the User's Guide
+ |      Desc: Causes the LabJack to reset after about 2 seconds
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.reset()
+ |      >>> {'idnum': 1}
+ |  
+ |  resetLJ(self, idNum=None)
+ |      Name: U12.resetLJ(idNum=None)
+ |      Args: See section 4.30 of the User's Guide
+ |      Desc: Causes the LabJack to reset after about 2 seconds
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.resetLJ()
+ |      >>> {'idnum': 1}
+ |  
+ |  sht1X(self, idNum=None, demo=0, softComm=0, mode=0, statusReg=0)
+ |      Name: U12.sht1X(idNum=None, demo=0, softComm=0, mode=0, statusReg=0)
+ |      Args: See section 4.31 of the User's Guide
+ |      Desc: This function retrieves temperature and/or humidity readings from an SHT1X sensor.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.sht1X()
+ |      >>> {'tempC': 24.69999885559082, 'rh': 39.724445343017578, 'idnum': 1, 'tempF': 76.459999084472656}
+ |  
+ |  shtCRC(self, numWrite, numRead, datatx, datarx, statusReg=0)
+ |      Name: U12.shtCRC(numWrite, numRead, datatx, datarx, statusReg=0)
+ |      Args: See section 4.33 of the User's Guide
+ |      Desc: Checks the CRC on an SHT1X communication
+ |  
+ |  shtComm(self, numWrite, numRead, datatx, idNum=None, softComm=0, waitMeas=0, serialReset=0, dataRate=0)
+ |      Name: U12.shtComm(numWrite, numRead, datatx, idNum=None, softComm=0, waitMeas=0, serialReset=0, dataRate=0)
+ |      Args: See section 4.32 of the User's Guide
+ |      Desc: Low-level public function to send and receive up to 4 bytes to from an SHT1X sensor
+ |  
+ |  synch(self, mode, numWriteRead, data, idNum=None, demo=0, msDelay=0, husDelay=0, controlCS=0, csLine=None, csState=0, configD=0)
+ |      Name: U12.synch(mode, numWriteRead, data, idNum=None, demo=0, msDelay=0, husDelay=0, controlCS=0, csLine=None, csState=0, configD=0)
+ |      Args: See section 4.35 of the User's Guide
+ |      Desc: This function retrieves temperature and/or humidity readings from an SHT1X sensor.
+ |  
+ |  voltsToBits(self, chnum, chgain, volts)
+ |      Name: U12.voltsToBits(chnum, chgain, bits)
+ |      Args: See section 4.15 of the User's Guide
+ |      Desc: Converts a voltage to it's 12-bit (0-4095) binary representation. No hardware communication is involved.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.voltsToBits(0, 0, 3)
+ |      >>> {'bits': 2662}
+ |  
+ |  watchdog(self, active, timeout, activeDn, stateDn, idNum=None, demo=0, reset=0)
+ |      Name: U12.watchdog(active, timeout, activeDn, stateDn, idNum=None, demo=0, reset=0)
+ |      Args: See section 4.35 of the User's Guide
+ |      Desc: Controls the LabJack watchdog function.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.watchdog(1, 1, [0, 0, 0], [0, 0, 0])
+ |      >>> {'idnum': 1}
+ |  
+ |  write(self, writeBuffer)
+ |  
+ |  writeMem(self, address, data, idnum=None, unlocked=False)
+ |      Name: U12.writeMem(self, address, data, idnum=None, unlocked=False)
+ |      Args: See section 4.37 of the User's Guide
+ |      Desc: Writes 4 bytes to the LabJack's 8,192 byte nonvolatile memory at a specified address.
+ |      
+ |      >>> dev = U12()
+ |      >>> dev.writeMem(0, [5, 246, 16, 59])
+ |      >>> 1
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data descriptors defined here:
+ |  
+ |  __dict__
+ |      dictionary for instance variables (if defined)
+ |  
+ |  __weakref__
+ |      list of weak references to the object (if defined)
+ |  
+ |  ----------------------------------------------------------------------
+ |  Data and other attributes defined here:
+ |  
+ |  GainMapping = [1.0, 2.0, 4.0, 5.0, 8.0, 10.0, 16.0, 20.0]
+
