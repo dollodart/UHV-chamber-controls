@@ -10,13 +10,12 @@ def PID(err_lst):
     ki=0.1
     kd=0.01
     P=kP*np.average(err_lst[-num_hist:])
-    I=kI*np.trapz(err_lst,x=None,dx=time_iter) #this will be defined prior to use and needn't be an argument to the function
-    D=kD*np.average(np.gradient(err_lst,time_iter)[-num_hist:]) #due to noise, use derivative history 
+    I=kI*np.trapz(err_lst,x=None,dx=time_iter)
+    D=kD*np.average(np.gradient(err_lst,time_iter)[-num_hist:])
     return P+I+D
 
-d=u12.U12(serialNumber=100054654)
-d.close() 
-d.open()
+dCont=u12.U12(serialNumber=100054654)
+dAES=u12.U12(serialNumber=100035035)
 
 time_iter=0.3
 time_tot=10000
@@ -37,29 +36,35 @@ o=0
 
 for i in range(num_iters): #need way for user input during control loop
     #read data from device
-    AESxp=d.eAnalogIn(0)
-    AESxn=d.eAnalogIn(1)
+    AESxp=dAES.eAnalogIn(0)
+    AESxn=dAES.eAnalogIn(1)
     AESx=AESxp['voltage']-AESxn['voltage']
-    AESyp=d.eAnalogIn(2)
-    AESyn=d.eAnalogIn(3)
+    AESyp=dAES.eAnalogIn(2)
+    AESyn=dAES.eAnalogIn(3)
     AESy=AESxp['voltage']-AESxn['voltage']
-    PSp=d.eAnalogIn(4)
-    PSn=d.eAnalogIn(5)
+    PSp=dCont.eAnalogIn(4)
+    PSn=dCont.eAnalogIn(5)
     PS=PSp['voltage']-PSn['voltage']
     if PS > 10:
         d.eAnalogOut(0,0)
-        print('control broken, out of safe operating range')
+        print('out of safe operating range, PS voltage set to 0')
         break
-    PD=d.eAnalogIn(6)['voltage']
-    TC=d.eAnalogIn(7)['voltage']
+    PDn=dCont.eAnalogIn(0)['voltage']
+    PDp=dCont.eAnalogIn(1)['voltage']
+    PD=PDp-PDn
+    PDroughn=dCont.eAnalogIn(2)['voltage']
+    PDroughp=dCont.eAnalogIn(3)['voltage']
+    PDrough=PDroughp-PDroughn
+    TC=dCont.eAnalogIn(7)['voltage']
    
     temp=(TC-1.25)/0.005 # deg C
-    pres=-2.73*PD+0.07 # torr 1e-6, unless otherwise specified
+    pres=-2.73*PD+0.07 # microtorr
+    pres_rough=PDrough
 
     #controls
     time_lst.append(i*time_iter)
     try:
-        manual_override=open('set_PSV.control','r')
+        manual_override=open('setpoints/PSV.control','r')
         for line in manual_override:
             PSto=float(line.rstrip('\n'))
         manual_override.close()
@@ -78,8 +83,7 @@ for i in range(num_iters): #need way for user input during control loop
             print('time','PS voltage', 'temperature', 'pressure')
             print(i*time_iter,PS,temp,pres)
             o=0
-    d.eAnalogOut(PSto/6.5,0) # see calibration files
-    d.eAnalogOut(PSto/6.5,0)
+    dCont.eAnalogOut(PSto/6.5,0) # see calibration files
 
     #write out for plotting
     AES_hist=open('out/AES_hist-' + time_stamp,'a')
@@ -89,11 +93,12 @@ for i in range(num_iters): #need way for user input during control loop
         AES_writer.writerow([str(i*time_iter),str(AESx),str(AESy)])
     with cont_hist as cont_csv:
         cont_writer=csv.writer(cont_csv)
-        cont_writer.writerow([str(i*time_iter),str(PS),str(temp),str(pres)])
+        cont_writer.writerow([str(i*time_iter),str(PS),str(temp),str(pres),str(PDrough)])
     AES_hist.close()
     cont_hist.close()
 
     sleep(time_iter)
     o+=1
 
-d.close()
+dAES.close()
+dCont.close()
