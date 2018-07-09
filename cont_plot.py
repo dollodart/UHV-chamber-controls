@@ -3,6 +3,7 @@ import datetime
 import numpy as np
 from time import sleep
 import csv
+plt.ion()
 
 now=datetime.datetime.now()
 time_stamp=str(now.year) +'-'+ str(now.month) +'-'+ str(now.day) +'-'+ str(now.hour)
@@ -58,5 +59,6 @@ while plotQ:
         axarr[1].plot(t_time_lst,t_temp_lst)
         axarr[2].plot(t_time_lst,t_pres_lst)
         axarr[3].plot(t_time_lst,t_pres_rough_lst)
+        #this does not accomplish the goal of erasing history, since previous plots are retained. But one may quit the script and restart to achieve a similar effect
     sleep(time_plot_update)
     plt.pause(time_plot_update)

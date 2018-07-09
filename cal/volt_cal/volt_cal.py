@@ -18,6 +18,3 @@ np.savetxt('vappl',vappl)
 np.savetxt('vout',vout)
 d.eAnalogOut(0,0)
 d.close()
-
-    
-
