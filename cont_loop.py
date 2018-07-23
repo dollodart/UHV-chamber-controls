@@ -29,26 +29,16 @@ o=0
 
 for i in range(num_iters):
     #read data from device
-    AESxp=dAES.eAnalogIn(0)
-    AESxn=dAES.eAnalogIn(1)
-    AESx=AESxp['voltage']-AESxn['voltage']
-    AESyp=dAES.eAnalogIn(2)
-    AESyn=dAES.eAnalogIn(3)
-    AESy=AESyp['voltage']-AESyn['voltage']
-    PSp=dCont.eAnalogIn(4)
-    PSn=dCont.eAnalogIn(5)
-    PS=PSp['voltage']-PSn['voltage']
+    AESx=dAES.eAnalogIn(8,gain=0)['voltage'] #gain=0 is an integer pairing meaning unity gain on a differential channel
+    AESy=dAES.eAnalogIn(9,gain=0)['voltage']
+    PS=dCont.eAnalogIn(10,gain=0)['voltage']
     if PS > 10:
         d.eAnalogOut(0,0)
         print('out of safe operating range, PS voltage set to 0')
         break
-    PDn=dCont.eAnalogIn(0)['voltage']
-    PDp=dCont.eAnalogIn(1)['voltage']
-    PD=PDp-PDn
-    PDroughn=dCont.eAnalogIn(2)['voltage']
-    PDroughp=dCont.eAnalogIn(3)['voltage']
-    PDrough=PDroughp-PDroughn
-    TC=dCont.eAnalogIn(7)['voltage']
+    PD=dCont.eAnalogIn(8,gain=0)['voltage']
+    PDrough=dCont.eAnalogIn(9,gain=0)['voltage']
+    TC=dCont.eAnalogIn(6,gain=0)['voltage']
    
     #voltage to physical conversion
     temp=(TC-1.25)/0.005 # deg C
@@ -83,7 +73,7 @@ for i in range(num_iters):
             print('status:automatic control\n time (s), PS voltage, temperature (K), pressure (utorr)')
             print(i*time_iter,PS,temp,pres)
             o=0
-        dCont.eAnalogOut(PSto/6.5,0) # voltage signal to voltage actual, full scale adjustment, see calibration files
+        dCont.eAnalogOut(PSto/6.5,0) # voltage signal to voltage power supply, full scale adjustment, see calibration files
 
     #write out
     AES_hist=open('out/AES_hist-' + time_stamp,'a')

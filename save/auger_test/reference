@@ -1,0 +1,5 @@
+cycle,emission current,beam voltage,sensitivity,time constant,scan rate
+1,2 mA,3 kV,2 mV,10 s,0.1 eV/s
+1,2 mA,3 kV,5 mV,10 s,0.1 eV/s
+1,2 mA,3 kV,10 mV,10 s,0.1 eV/s
+1,2 mA,3 kV,2 mV,30 s,0.1 eV/s

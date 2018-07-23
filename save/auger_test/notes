@@ -1,0 +1,5 @@
+the product of the scan rate and low-pass filter time constant should be order unity to ensure that the low-pass filter does not cut out signal
+
+this scan is for carbon, which is present on most surfaces which are not cleaned, and has a peak at the nominal energy of 263 eV. Auger systems may be offset so that the actual signal occurs at a different energy offset. From experience, this offset may be 20 eV. To what it may be attributed (the physics of the plant or analog drift). Note that there is further an observed off-set between the analog display on the box panel and the signal coming from the rear panel, perhaps due to mismatched ground (though the differential signal is measured with reference to the box ground using a BNC connection).
+
+As an observation the analog display on the AC line conditioner is fluctuating in the range of 1.6 +/- 0.2 amperes on a sub-second time scale
