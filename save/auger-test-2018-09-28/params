@@ -1,0 +1,5 @@
+first parameters are 2 mA beam current and 2 kV electron multiplier supply, 500 V electron gun voltage, modulation 10 V peak-to-peak,
+
+second parameters change only beam current to 1 mA
+
+thid parameters change only electron gun voltage to 1 kV

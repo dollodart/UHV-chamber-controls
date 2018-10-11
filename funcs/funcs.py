@@ -1,4 +1,5 @@
 import numpy as np
+from time import sleep
 
 def plant(old,x,time_iter):
     ''' a plant model which returns temperature based on Joule heating, the previous value, the time interval. COnsiders conduction and radiation effects '''
@@ -38,3 +39,18 @@ def PID(err_lst,time_iter,num_hist):
         D=kD*np.average(np.gradient(err_lst,time_iter))
 
     return P+I+D
+
+def PGA_auto(controller,channel):
+    '''adjusts the gain of the programmable gain amplifier prior to digitization for signals that vary in voltage. Assumes positive differential signal.'''
+    signal=abs(controller.eAnalogIn(channel=channel,gain=1)['voltage'])
+    gains=np.array([1.,2.,4.,5.,8.,10.,16.,20.])
+    ranges=20./gains
+    ratios=signal/ranges
+    valid_gains=gains[np.where(ratios<1)]
+    try:
+        gain=int(max(valid_gains))
+    except TypeError:
+        gain=20
+    sleep(0.0800) #sleep 80 milliseconds prior to querying channel again
+#    print('signal='+str(signal)+',gain='+str(gain))
+    return controller.eAnalogIn(channel=channel,gain=gain)['voltage']

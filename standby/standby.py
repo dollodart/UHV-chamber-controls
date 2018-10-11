@@ -23,7 +23,7 @@ def send_email():
 now=datetime.datetime.now()
 dCont=u12.U12(serialNumber=100054654)
 while True:
-    rough_pressure=dCont.eAnalogIn(9)['voltage'] # unity gain, 1 V <-> 1 torr, channel 9 is differential voltage 3-2
+    rough_pressure=-1.*(dCont.eAnalogIn(channel=9,gain=20)['voltage']) # gain specification is only for pre-digitizing the input, which is then divided out. At very low pressures and thus low signal voltages from the unity gain thermocouple pressure transducer controller, where 8 millitorr -> 0.008 V, this will improve the reading, though the sensitivity is still limited
     print(rough_pressure)
     if rough_pressure > 0.1:  #greater than 100 millitorr
         with open('log','a') as append_file:

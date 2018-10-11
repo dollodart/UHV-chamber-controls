@@ -39,10 +39,10 @@ while plotQ:
     except:
         pass
     if len(time_lst) < num_items:
-        plt.plot(AESx_lst,AESy_lst)
+        plt.plot(AESx_lst,AESy_lst,color='k')
     else:
         t_AESx_lst=AESx_lst[-num_items:]
         t_AESy_lst=AESy_lst[-num_items:]
-        plt.plot(AESx_lst,AESy_lst)
+        plt.plot(AESx_lst,AESy_lst,'k-')
     plt.pause(time_plot_update)
     sleep(time_plot_update)

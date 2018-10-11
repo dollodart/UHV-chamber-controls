@@ -1,15 +1,16 @@
 import u12
 from time import sleep
-import datetime
+from time import time
 from scipy.integrate import simps
+import datetime
 import csv
 import numpy as np
 import sys
 sys.path.insert(0, '/home/egs/UHV-chamber-controls/funcs')
 from funcs import PID
 
-dCont=u12.U12(serialNumber=100054654)
-dAES=u12.U12(serialNumber=100035035)
+d1=u12.U12(serialNumber=100054654)
+d2=u12.U12(serialNumber=100035035)
 
 time_iter=0.3
 time_tot=10000
@@ -24,21 +25,24 @@ now=datetime.datetime.now()
 time_stamp=str(now.year) +'-'+ str(now.month) +'-'+ str(now.day) +'-'+ str(now.hour)
 
 time_lst=[]
-err_lst=[0,0,0]
+err_lst=[0]*3
 o=0
+init_time=time()
 
 for i in range(num_iters):
     #read data from device
-    AESx=dAES.eAnalogIn(8,gain=0)['voltage'] #gain=0 is an integer pairing meaning unity gain on a differential channel
-    AESy=dAES.eAnalogIn(9,gain=0)['voltage']
-    PS=dCont.eAnalogIn(10,gain=0)['voltage']
+    AESx=d2.eAnalogIn(channel=8,gain=1)['voltage'] 
+    AESx*=100.
+    AESx*=1.7 #gain
+    AESy=d2.eAnalogIn(channel=9,gain=1)['voltage']
+    PS=d1.eAnalogIn(channel=10,gain=1)['voltage']
     if PS > 10:
         d.eAnalogOut(0,0)
         print('out of safe operating range, PS voltage set to 0')
         break
-    PD=dCont.eAnalogIn(8,gain=0)['voltage']
-    PDrough=dCont.eAnalogIn(9,gain=0)['voltage']
-    TC=dCont.eAnalogIn(6,gain=0)['voltage']
+    TC=d2.eAnalogIn(channel=4)['voltage'] #this signal comes from an Op-amp, that is, not differential
+    PD=d1.eAnalogIn(channel=8,gain=1)['voltage']
+    PDrough=d1.eAnalogIn(channel=9,gain=20)['voltage']
    
     #voltage to physical conversion
     temp=(TC-1.25)/0.005 # deg C
@@ -46,7 +50,7 @@ for i in range(num_iters):
     pres_rough=1.*PDrough  # torr
 
     #controls
-    time_lst.append(i*time_iter)
+    time_lst.append(time()-init_time) #nominal time and real time may differ due to processing time
     try:
         temperature_setpoint=open('setpoints/temp.control','r')
         for line in temperature_setpoint:
@@ -63,7 +67,7 @@ for i in range(num_iters):
             print('status:manual override\n time (s), PS voltage, temperature (K), pressure (utorr)')
             print(i*time_iter,PS,temp,pres)
             o=0
-        dCont.eAnalogOut(PS0)
+        d1.eAnalogOut(PS0)
     except:
         err=tempSP-temp
         err_lst.append(err)
@@ -73,7 +77,7 @@ for i in range(num_iters):
             print('status:automatic control\n time (s), PS voltage, temperature (K), pressure (utorr)')
             print(i*time_iter,PS,temp,pres)
             o=0
-        dCont.eAnalogOut(PSto/6.5,0) # voltage signal to voltage power supply, full scale adjustment, see calibration files
+        d1.eAnalogOut(PSto/6.5,0) # voltage signal to voltage power supply, full scale adjustment, see calibration files
 
     #write out
     AES_hist=open('out/AES_hist-' + time_stamp,'a')
@@ -90,5 +94,5 @@ for i in range(num_iters):
     sleep(time_iter)
     o+=1
 
-dAES.close()
-dCont.close()
+d2.close()
+d1.close()
