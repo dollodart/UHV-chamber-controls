@@ -3,19 +3,27 @@ import datetime
 import csv
 import numpy as np
 from time import sleep
+#in order for the updates to happen, a different backend such as 'wx' has to be used, but there are version incompatibilities
+plt.switch_backend('Qt4Agg')
 
+plt.ion()
 now=datetime.datetime.now()
 time_stamp=str(now.year) +'-'+ str(now.month) +'-'+ str(now.day) +'-'+ str(now.hour)
 time_plot_update=4 #seconds
 num_items=20
 
 f, axarr = plt.subplots(2, sharex=True)
+ax1,ax2=axarr
+
 plt.xlabel('Time (s)')
-axarr[0].set_title('Electron Beam Energy (eV)')
-axarr[1].set_title('Counts')
+ax1.set_title('Electron Beam Energy (eV)')
+ax2.set_title('Counts')
 f.subplots_adjust(hspace=0.3)
 
 plotQ=True
+lineAESx,=ax1.plot([],[],lw=2)
+lineAESy,=ax2.plot([],[],lw=2)
+
 while plotQ:
     try:
         do_plot=open('setpoints/do_plot.control','r')
@@ -44,14 +52,17 @@ while plotQ:
     except:
         pass
     if len(time_lst) < num_items:
-        axarr[0].plot(time_lst,AESx_lst,'k-')
-        axarr[1].plot(time_lst,AESy_lst,'k-')
+        lineAESx.set_data(time_lst,AESx_lst)
+        lineAESy.set_data(time_lst,AESy_lst)
     else:
         t_time_lst=time_lst[-num_items:]
         time_adj=np.array(t_time_lst)+(time_lst[-1] -time_lst[-num_items]) #broadcast initial time
         t_AESx_lst=AESx_lst[-num_items:]
         t_AESy_lst=AESy_lst[-num_items:]
-        axarr[0].plot(t_time_lst,t_AESx_lst,'k-')
-        axarr[1].plot(t_time_lst,t_AESy_lst,'k-')
-    plt.pause(time_plot_update)
+        ax1.set_xlim(t_time_lst[0],t_time_lst[-1])
+        ax2.set_xlim(t_time_lst[0],t_time_lst[-1])
+        lineAESx.set_data(t_time_lst,t_AESx_lst)
+        lineAESy.set_data(t_time_lst,t_AESy_lst)
+    f.canvas.draw()
+    f.canvas.flush_events()
     sleep(time_plot_update)

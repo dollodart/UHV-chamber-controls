@@ -1,0 +1,5 @@
+Settings were 2 kV electron multiplier 1 mV lock-in sensitivity 3 second time constant 10 eV modulation amplitude.
+
+It is thought that this is a copper peak first showing up with a beam voltage of 1 kV, since copper has peaks rising from 750 to 950 eV. However upon changing to 3.5 kV beam voltage this signal disappears, perhaps showing an elastic peak and an error or offset in the selected voltage and the beam votlage (the reading on the display is between 400 and 550 eV, but this is multiplied with a gain of 1.7 since it was found from discussions with an RBD technician that the outer cylinder voltage selects for electrons which are 1.7 times less than the display voltage unless it is corrected for, which in this system it is not).
+
+

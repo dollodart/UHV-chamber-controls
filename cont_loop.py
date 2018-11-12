@@ -9,8 +9,9 @@ import sys
 sys.path.insert(0, '/home/egs/UHV-chamber-controls/funcs')
 from funcs import PID
 
-d1=u12.U12(serialNumber=100054654)
 d2=u12.U12(serialNumber=100035035)
+#d1=u12.U12(serialNumber=100054654)
+d1=d2
 
 time_iter=0.3
 time_tot=10000
