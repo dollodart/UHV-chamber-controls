@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from drawnow import drawnow, figure
 import datetime
 import csv
 import numpy as np
