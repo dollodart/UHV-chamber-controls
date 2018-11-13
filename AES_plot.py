@@ -7,29 +7,27 @@ from time import sleep
 
 now=datetime.datetime.now()
 time_stamp=str(now.year) +'-'+ str(now.month) +'-'+ str(now.day) +'-'+ str(now.hour)
-time_plot_update=2.
-num_items=30
+time_plot_update=1.
+num_items=300
 
 plotQ=True
 AESx_lst=[]
 AESy_lst=[]
 
-def draw_figs():
-    f, axarr = plt.subplots(2, sharex=True)
-    plt.xlabel('Time (s)')
-    ax1,ax2=axarr
-    f.subplots_adjust(hspace=0.3)
-    ax1.set_title('Electron Beam Energy (eV)')
-    ax2.set_title('Counts')
-    ax1.plot(time_lst,AESx_lst,'bo-')
-    ax2.plot(time_lst,AESy_lst,'bo-')
-
-    plt.figure()
-    plt.xlabel('Counts')
+def draw():
+    plt.subplot(2,2,1)
+    plt.plot(t,-1.*np.array(x),'bo-')
     plt.ylabel('Electron Beam Energy (eV)')
-    plt.plot(AESx_lst,AESy_lst,'bo-')
-
-    plt.show()
+    plt.subplot(2,2,3)
+    plt.ylabel('Counts (a.u.)')
+    plt.xlabel('Time (s)')
+    plt.plot(t,y,'bo-')
+    plt.subplot(2,2,2)
+    plt.plot(x,y)
+    plt.xticks(np.arange(min(x),max(x),1.0),
+            np.round(-np.arange(min(x),max(x),1.0)))
+    plt.xlabel('Electron Beam Energy (eV)')
+    plt.ylabel('Counts (a.u.)')
 
 while plotQ:
     try:
@@ -51,16 +49,12 @@ while plotQ:
             AESx_lst.append(float(AESx))
             AESy_lst.append(float(AESy))
 
-    try:
-        time_lst=time_lst[-num_items:]
-        AESx_lst=AESx_lst[-num_items:]
-        AESy_lst=AESy_lst[-num_items:]
-    except IndexError:
-        pass
-
     if len(time_lst) > num_items:
         time_lst=time_lst[-num_items:]
         AESx_lst=AESx_lst[-num_items:]
         AESy_lst=AESy_lst[-num_items:]
-    drawnow(draw_figs)
+    t=time_lst #short-hand references
+    x=AESx_lst
+    y=AESy_lst
+    drawnow(draw)
     sleep(time_plot_update)

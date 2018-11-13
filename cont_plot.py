@@ -13,18 +13,19 @@ time_iter=0.3
 num_items=int(round(plot_window/time_iter))
 
 def draw_fig():
-    f, axarr = plt.subplots(4, sharex=True)
+    plt.subplot(4,1,1)
+    plt.ylabel('Power Supply Potential (V)')
+    plt.plot(time_lst,PS_lst)
+    plt.subplot(4,1,2)
+    plt.plot(time_lst,temp_lst)
+    plt.ylabel('Temperature (deg C)')
+    plt.subplot(4,1,3)
+    plt.plot(time_lst,pres_lst)
+    plt.ylabel('Pressure (1e-7 torr)')
+    plt.subplot(4,1,4)
+    plt.plot(time_lst,pres_rough_lst)
     plt.xlabel('Time (s)')
-    axarr[0].set_title('Power Supply Potential (V)')
-    axarr[1].set_title('Temperature (deg C)')
-    axarr[2].set_title('Pressure (1e-7 torr)')
-    axarr[3].set_title('Foreline pressure (torr)')
-    axarr[0].plot(time_lst,PS_lst)
-    axarr[1].plot(time_lst,temp_lst)
-    axarr[2].plot(time_lst,pres_lst)
-    axarr[3].plot(time_lst,pres_rough_lst)
-    f.subplots_adjust(hspace=0.3)
-    plt.show()
+    plt.ylabel('Foreline pressure (torr)')
 
 plotQ=True
 while plotQ:
