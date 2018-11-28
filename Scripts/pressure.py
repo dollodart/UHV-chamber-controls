@@ -1,9 +1,9 @@
 import u12
 import numpy
+from time import sleep
 
 def get_pressure(d):
     '''using AI0'''
-    # d = u12.U12()
     digital_readout=[]
     pins = [0, 1, 2 , 4]
     for x in pins:
@@ -23,19 +23,26 @@ def get_pressure(d):
     # print pressure
     return pressure
 
-def pressure_read(d, time = 20):
-    #needs to turn on and off
-    #set fixed time, allow for variable input to change
-    #10-15 seconds?
-    
-    #turn on
-    #d.eAnalogOut()
-    #wait time x
-    from time import sleep
-    sleep(time)
+def ion_on(d):
+    d.eDigitalOut(0,1)
+    d.eDigitalOut(1,1)
+
+def ion_off(d):
+    d.eDigitalOut(0,0)
+    d.eDigitalOut(1,0)
+
+def pressure_read(d, time = 10, state=False):
+    '''uses AI0, passes a int time and bool state (try to make state a pointer/universal)'''
+    #check if on
+    if not state:
+        #turn on
+        ion_on(d)
+        #wait for t: standard is 10 seconds
+        sleep(time)
     p= get_pressure(d)
     #turn off
+    ion_off(d)
 
     return p
-
-#print(pressure_read())
+# d=u12.U12()
+# print(pressure_read(d,5))

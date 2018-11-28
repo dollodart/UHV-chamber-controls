@@ -10,10 +10,10 @@ sys.path.insert(0, '/home/albert/Documents/Albert Work/Scripts')
 from funcs import PID
 
 d1=u12.U12()
-d2=d1
+d1=d1
 
 time_iter=0.3
-time_tot=10000
+time_tot=100
 time_cont=2
 
 status_time=20
@@ -31,16 +31,18 @@ init_time=time()
 
 for i in range(num_iters):
     #read data from device
-    AESx=d2.eAnalogIn(channel=8,gain=1)['voltage'] 
+
+    
+    AESx=d1.eAnalogIn(channel=8,gain=1)['voltage'] 
     AESx*=100.
     AESx*=1.7 #gain
-    AESy=d2.eAnalogIn(channel=9,gain=1)['voltage']
+    AESy=d1.eAnalogIn(channel=9,gain=1)['voltage']
     PS=d1.eAnalogIn(channel=10,gain=1)['voltage']
     if PS > 10:
         d1.eAnalogOut(0,0)
         print('out of safe operating range, PS voltage set to 0')
         break
-    TC=d2.eAnalogIn(channel=4)['voltage'] #this signal comes from an Op-amp, that is, not differential
+    TC=d1.eAnalogIn(channel=4)['voltage'] #this signal comes from an Op-amp, that is, not differential
     PD=d1.eAnalogIn(channel=8,gain=1)['voltage']
     PDrough=d1.eAnalogIn(channel=9,gain=20)['voltage']
    
@@ -67,12 +69,12 @@ for i in range(num_iters):
             print('status:manual override\n time (s), PS voltage, temperature (K), pressure (utorr)')
             print(i*time_iter,PS,temp,pres)
             o=0
-        d1.eAnalogOut(PS0)
+        d1.eAnalogOut(PS0,0)
     except:
         err=tempSP-temp
         err_lst.append(err)
         response=PID(err_lst,time_iter,num_hist)
-        PSto=PS0+response # adjust the current voltage by NFB
+        PSto=PS+response # adjust the current voltage by NFB
         if o > num_status_iters:
             print('status:automatic control\n time (s), PS voltage, temperature (K), pressure (utorr)')
             print(i*time_iter,PS,temp,pres)
@@ -94,5 +96,5 @@ for i in range(num_iters):
     sleep(time_iter)
     o+=1
 
-d2.close()
 d1.close()
+

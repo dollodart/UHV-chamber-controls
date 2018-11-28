@@ -47,7 +47,7 @@ def temperature_read(d):
     #d = u12.U12()
     reading = d.eAnalogIn(1) 
     # print(reading)
-    voltage = reading["voltage"]
+    voltage = abs(reading["voltage"])
     # print(voltage)
     uv=(voltage/213.77 + 0.001)* 1000000
     # print(uv)
