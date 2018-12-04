@@ -13,13 +13,15 @@ from pressure import pressure_read
 import matplotlib.pyplot as plt
 import pylab as pylab
 
-def write_to_csv(row, name):
+def write_to_csv(row, name, read):
     ''' data order=[times,amps,volts,power,temps, pressures]'''
-    with name as temp_csv:
+    file_temp = open(name,read)
+    with file_temp as temp_csv:
         temp_writer=csv.writer(temp_csv)
         temp_writer.writerow(row)
         # temp_writer.writerow([str(times),str(amps),str(volts),str(power),str(temps), str(pressures)])
-    power_temp.close()
+    file_temp.close()
+    return
         
 
 d=u12.U12()
@@ -38,29 +40,44 @@ power=["Power"]
 pressures=["Pressures"]
 data=[times,amps,volts,power,temps, pressures]
 
-file_new=input("Append File or Create New: 1=New, 0=Append -> ")
+file_new=input("Append File or Create New: 2=New/Rewrite 1=New w/ Descriptor, 0=Append -> ")
 
-if file_new:
+if file_new==1:
         descriptor=input("File Descriptor: (text must have quotes) ")
-        power_temp = open('power_temp-' + time_stamp + "_" + str(descriptor),'a')
+        file_name='power_temp-' + time_stamp + "_" + str(descriptor)
+        read_write='a'
+        power_temp = open(file_name,read_write)
+elif file_new==0:
+    file_name='power_temp-' + time_stamp
+    read_write='a'
+    
 else:
-        power_temp = open('power_temp-' + time_stamp,'w')
-write_to_csv(data, power_temp)
+    file_name='power_temp-' + time_stamp
+    read_write='w'
+    power_temp = open(file_name,read_write)    
+write_to_csv(data, file_name, read_write)
 
 amperage=input("Initial amps: ")
 voltage=input("Initial volts: ")
 initial=time()
 k=0
 for i in range(time_length/iter):
-    data_row=[]
-    temps.append(temperature_read(d))
-    pressures.append(pressure_read(d, time=0))
+    meas_temp=temperature_read(d)
+    temps.append(meas_temp)
+    meas_pressure=pressure_read(d, time=0)
+    pressures.append(meas_pressure)
     current_t=time()
     actual=current_t-initial
     times.append(actual)
     amps.append(amperage)
     volts.append(voltage)
-    power.append(amperage*voltage)
+    calc_power=amperage*voltage
+    power.append(calc_power)
+    data_row=[actual,amperage, voltage, calc_power, meas_temp, meas_pressure]
+    write_to_csv(data_row,file_name, read_write)
+    if(k%10==0):
+        print("Running Temp: " + str(meas_temp) + " deg C")
+    k+=1
     try:
         sleep(iter)
     except KeyboardInterrupt:
@@ -76,6 +93,7 @@ if plot_choice==1:
     plt.plot(times,temps)
     plt.xlabel('Times in Seconds')
     plt.ylabel('Temperature in deg. C')
+    plt.tight_layout()
     pylab.show()
 elif plot_choice==0:
     plt.plot(power,temps)
