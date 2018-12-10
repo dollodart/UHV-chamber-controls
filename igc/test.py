@@ -5,4 +5,3 @@ d2=u12.U12(serialNumber=100035035)
 #d1.eDigitalOut(1,1)
 #d1.eDigitalOut(0,1)
 #d1.eDigitalOut(0,0)
-#note relay 1 is broken

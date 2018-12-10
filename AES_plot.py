@@ -8,7 +8,7 @@ from time import sleep
 now=datetime.datetime.now()
 time_stamp=str(now.year) +'-'+ str(now.month) +'-'+ str(now.day) +'-'+ str(now.hour)
 time_plot_update=1.
-num_items=300
+num_items=1000
 
 plotQ=True
 AESx_lst=[]
@@ -24,8 +24,8 @@ def draw():
     plt.plot(t,y,'bo-')
     plt.subplot(2,2,2)
     plt.plot(x,y)
-    plt.xticks(np.arange(min(x),max(x),1.0),
-            np.round(-np.arange(min(x),max(x),1.0)))
+    plt.xticks(np.linspace(min(x),max(x),10),
+            [int(val) for val in np.round(-np.linspace(min(x),max(x),10))])
     plt.xlabel('Electron Beam Energy (eV)')
     plt.ylabel('Counts (a.u.)')
 
