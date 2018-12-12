@@ -7,8 +7,8 @@ from time import sleep
 
 now=datetime.datetime.now()
 time_stamp=str(now.year) +'-'+ str(now.month) +'-'+ str(now.day) +'-'+ str(now.hour)
-time_plot_update=1.
-num_items=1000
+time_plot_update=0.25
+num_items=400
 
 plotQ=True
 AESx_lst=[]
