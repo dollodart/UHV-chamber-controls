@@ -57,8 +57,8 @@ else:
     power_temp = open(file_name,read_write)    
 write_to_csv(data, file_name, read_write)
 
-voltage=input("Initial volts: ")
 amperage=input("Initial amps: ")
+voltage=input("Initial volts: ")
 initial=time()
 k=0
 for i in range(time_length/iter):
@@ -83,8 +83,8 @@ for i in range(time_length/iter):
     except KeyboardInterrupt:
         continue_check = input("\n Continue? 1=YES, 0=NO -> ")
         if continue_check:
-            voltage=input("New Voltage: ")
             amperage=input("New Amps: ")
+            voltage=input("New Voltage: ")
         else:
             break
 

@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import pylab as pylab
 
 def write_to_csv(row, name, read):
-    ''' data order=[times,amps,volts,power,temps, pressures]'''
+    ''' data order=[times,resistance,amps,volts,power,temps, sstemps, pressures]'''
     file_temp = open(name,read)
     with file_temp as temp_csv:
         temp_writer=csv.writer(temp_csv)
@@ -31,9 +31,11 @@ time_stamp=str(now.year) +'-'+ str(now.month) +'-'+ str(now.day) +'-'+ str(now.h
 
 iter= 2
 time_length= 5000
-
+sstemp=0
 temps=["Temps"]
+sstemps=["SSTemps"]
 times=["Times"]
+resistances=["Resistances"]
 amps=["Amps"]
 volts=["Volts"]
 power=["Power"]
@@ -59,9 +61,11 @@ write_to_csv(data, file_name, read_write)
 
 voltage=input("Initial volts: ")
 amperage=input("Initial amps: ")
+resistance=input("Initial Resistance: ")
 initial=time()
 k=0
 for i in range(time_length/iter):
+    resistances.append(resistance)
     meas_temp=temperature_read(d)
     temps.append(meas_temp)
     meas_pressure=pressure_read(d, time=0)
@@ -69,11 +73,12 @@ for i in range(time_length/iter):
     current_t=time()
     actual=current_t-initial
     times.append(actual)
+    sstemps.append(sstemp)
     amps.append(amperage)
     volts.append(voltage)
     calc_power=amperage*voltage
     power.append(calc_power)
-    data_row=[actual,amperage, voltage, calc_power, meas_temp, meas_pressure]
+    data_row=[actual,resistance,amperage, voltage, calc_power, meas_temp,sstemp, meas_pressure]
     write_to_csv(data_row,file_name, read_write)
     if(k%10==0):
         print("Running Temp: " + str(meas_temp) + " deg C")
@@ -81,6 +86,7 @@ for i in range(time_length/iter):
     try:
         sleep(iter)
     except KeyboardInterrupt:
+        sstemp=input("Steady State Temperature: ")
         continue_check = input("\n Continue? 1=YES, 0=NO -> ")
         if continue_check:
             voltage=input("New Voltage: ")
