@@ -31,7 +31,7 @@ cb=[c0b,c1b,c2b,c3b,c4b,c5b,c6b,c7b,c8b,c9b]
 cc=[c0c,c1c,c2c,c3c,c4c,c5c,c6c]
 
 def t(v):
-    '''Valid for 0 to 1372 deg C, Temperature in deg. C and thermovoltage in uV.'''
+    '''Valid for 0 to 1372 deg C, Temperature in deg. C and thermovoltage in uV. Set to use adafruit amp.'''
     res=0
     if 0. < v < 20644.:
         for i in range(len(cb)):
@@ -42,14 +42,25 @@ def t(v):
     else:
         return None 
     return res
-def temperature_read(d): 
-    '''using channel AI 1'''
+def temperature_read(d, ada=True): 
+    '''using channel AI 1, ada default'''
     #d = u12.U12()
     reading = d.eAnalogIn(1) 
     # print(reading)
     voltage = abs(reading["voltage"])
     # print(voltage)
-    uv=(voltage/213.77 + 0.001)* 1000000
-    # print(uv)
-    # print(t(uv))
-    return t(uv)
+    
+    #Using op-amp
+    if not ada:
+        uv=(voltage/213.77 + 0.001)* 1000000
+        return t(uv)
+        # print(uv)
+        # print(t(uv))
+    
+    #using adafruit amp
+    else:
+        temp=(voltage-1.25)/0.005
+        return temp
+
+    
+    
