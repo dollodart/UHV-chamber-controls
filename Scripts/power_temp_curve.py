@@ -13,9 +13,12 @@ from pressure import pressure_read
 import matplotlib.pyplot as plt
 import pylab as pylab
 
-def write_to_csv(row, name, read):
-    ''' data order=[times,amps,volts,power,temps, pressures]'''
-    file_temp = open(name,read)
+def write_to_csv(row, name, rewrite=False):
+    ''' data order=[times,resistance,amps,volts,power,temps, pressures]'''
+    if rewrite:
+        file_temp = open(name,'w')
+    else:
+        file_temp = open(name,'a')
     with file_temp as temp_csv:
         temp_writer=csv.writer(temp_csv)
         temp_writer.writerow(row)
@@ -27,41 +30,44 @@ def write_to_csv(row, name, read):
 d=u12.U12()
 
 now=datetime.datetime.now()
-time_stamp=str(now.year) +'-'+ str(now.month) +'-'+ str(now.day) +'-'+ str(now.hour)
+time_stamp=str(now.year) +'-'+ str(now.month) +'-'+ str(now.day)
+# +'-'+ str(now.hour)
 
 iter= 2
-time_length= 5000
-
+time_length= 20000
+# sstemp=0
 temps=["Temps"]
+# sstemps=["SSTemps"]
 times=["Times"]
+resistances=["Resistances"]
 amps=["Amps"]
 volts=["Volts"]
 power=["Power"]
 pressures=["Pressures"]
-data=[times,amps,volts,power,temps, pressures]
+data=[times, resistances,amps,volts,power,temps, pressures]
 
-file_new=input("Append File or Create New: 2=New/Rewrite 1=New w/ Descriptor, 0=Append -> ")
+file_new=input("Append File or Create New: 2=New 1=New w/ Descriptor 0=Rewrite -> ")
 
 if file_new==1:
-        descriptor=input("File Descriptor: (text must have quotes) ")
-        file_name='power_temp-' + time_stamp + "_" + str(descriptor)
-        read_write='a'
-        power_temp = open(file_name,read_write)
-elif file_new==0:
+    descriptor=input("File Descriptor: (text must have quotes) ")
+    file_name='power_temp-' + time_stamp + "_" + str(descriptor)
+    rewrite=False
+elif file_new==2:
     file_name='power_temp-' + time_stamp
-    read_write='a'
-    
+    rewrite=False
 else:
     file_name='power_temp-' + time_stamp
-    read_write='w'
-    power_temp = open(file_name,read_write)    
-write_to_csv(data, file_name, read_write)
+    rewrite=True
+write_to_csv(data, file_name, rewrite)
 
 voltage=input("Initial volts: ")
 amperage=input("Initial amps: ")
+resistance=input("Initial Resistance: ")
+print "Enter Cntrl+C to KeyboardInterrupt and input new power state"
 initial=time()
 k=0
 for i in range(time_length/iter):
+    resistances.append(resistance)
     meas_temp=temperature_read(d)
     temps.append(meas_temp)
     meas_pressure=pressure_read(d, time=0)
@@ -69,22 +75,25 @@ for i in range(time_length/iter):
     current_t=time()
     actual=current_t-initial
     times.append(actual)
+    # sstemps.append(sstemp)
     amps.append(amperage)
     volts.append(voltage)
     calc_power=amperage*voltage
     power.append(calc_power)
-    data_row=[actual,amperage, voltage, calc_power, meas_temp, meas_pressure]
-    write_to_csv(data_row,file_name, read_write)
+    data_row=[actual,resistance,amperage, voltage, calc_power, meas_temp, meas_pressure]
+    write_to_csv(data_row,file_name)
     if(k%10==0):
         print("Running Temp: " + str(meas_temp) + " deg C")
     k+=1
     try:
         sleep(iter)
     except KeyboardInterrupt:
+        sstemp=input("Steady State Temperature: ")
         continue_check = input("\n Continue? 1=YES, 0=NO -> ")
         if continue_check:
             voltage=input("New Voltage: ")
             amperage=input("New Amps: ")
+            print "Enter Cntrl+C to KeyboardInterrupt and input new power state"
         else:
             break
 

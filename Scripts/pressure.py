@@ -32,9 +32,9 @@ def ion_off(d):
     d.eDigitalOut(1,0)
 
 def pressure_read(d, time = 10, state=False):
-    '''uses AI0, passes a int time and bool state (try to make state a pointer/universal)'''
+    '''uses AI0, passes a int time and bool state (True to turn on)'''
     #check if on
-    if not state:
+    if state:
         #turn on
         ion_on(d)
         #wait for t: standard is 10 seconds

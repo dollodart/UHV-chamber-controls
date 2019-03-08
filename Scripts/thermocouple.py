@@ -43,22 +43,19 @@ def t(v):
         return None 
     return res
 def temperature_read(d, ada=True): 
-    '''using channel AI 1, ada default'''
-    #d = u12.U12()
-    reading = d.eAnalogIn(1) 
-    # print(reading)
-    voltage = abs(reading["voltage"])
-    # print(voltage)
-    
+    '''using AI1 for adafruit default. Set ada=False for op-amp (AI3)'''
+  
     #Using op-amp
     if not ada:
+        reading = d.eAnalogIn(3) 
+        voltage = abs(reading["voltage"])
         uv=(voltage/213.77 + 0.001)* 1000000
         return t(uv)
-        # print(uv)
-        # print(t(uv))
-    
+        
     #using adafruit amp
     else:
+        reading = d.eAnalogIn(1) 
+        voltage = abs(reading["voltage"])
         temp=(voltage-1.25)/0.005
         return temp
 
